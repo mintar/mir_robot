@@ -1,10 +1,13 @@
 <?xml version="1.0" ?>
 
 <launch>
+  <arg name="mir_type" default="mir_100" description="The MiR variant. Can be 'mir_100' or 'mir_250' for now." />
   <arg name="gui" default="true" />
 
   <!-- load MiR URDF -->
-  <include file="$(find-pkg-share mir_description)/launch/robot_state_publisher.launch" />
+  <include file="$(find-pkg-share mir_description)/launch/robot_state_publisher.launch">
+    <arg name="mir_type" value="$(var mir_type)" />
+  </include>
 
   <node if="$(var gui)"     name="joint_state_publisher" pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
   <node unless="$(var gui)" name="joint_state_publisher" pkg="joint_state_publisher"     exec="joint_state_publisher" />
