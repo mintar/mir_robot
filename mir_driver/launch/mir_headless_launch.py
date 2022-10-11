@@ -35,7 +35,7 @@ from launch import LaunchDescription
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import FrontendLaunchDescriptionSource
 from launch_ros.actions import Node
 
 
@@ -59,10 +59,11 @@ def generate_launch_description():
                 description='Set to true to publish tf using mir_description',
             ),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(os.path.join(mir_description_dir, 'launch', 'mir_launch.py')),
+                FrontendLaunchDescriptionSource(
+                    os.path.join(mir_description_dir, 'launch', 'robot_state_publisher.launch')
+                ),
                 launch_arguments={
-                    'joint_state_publisher_enabled': 'false',
-                    'namespace': LaunchConfiguration('namespace'),
+                    'tf_prefix': LaunchConfiguration('namespace'),
                 }.items(),
                 condition=IfCondition(LaunchConfiguration('robot_state_publisher_enabled')),
             ),

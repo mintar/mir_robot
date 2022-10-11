@@ -34,7 +34,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.conditions import IfCondition
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, SetLaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
@@ -103,7 +103,7 @@ def generate_launch_description():
     )
 
     launch_mir_description = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(mir_description_dir, 'launch', 'mir_launch.py'))
+        FrontendLaunchDescriptionSource(os.path.join(mir_description_dir, 'launch', 'robot_state_publisher.launch'))
     )
 
     launch_mir_gazebo_common = IncludeLaunchDescription(
