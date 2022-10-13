@@ -1,5 +1,5 @@
-mir_driver
-==========
+mir_robot
+=========
 
 ## Disclaimer
 
