@@ -2,8 +2,8 @@ amcl:
   ros__parameters:
     use_sim_time: True
     alpha1: 0.2
-    alpha2: 0.2
-    alpha3: 0.2
+    alpha2: 0.1
+    alpha3: 0.1
     alpha4: 0.2
     alpha5: 0.2
     base_frame_id: "base_footprint"
@@ -14,11 +14,11 @@ amcl:
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
+    laser_max_range: -1.0
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
     max_beams: 60
-    max_particles: 2000
+    max_particles: 5000
     min_particles: 500
     odom_frame_id: "odom"
     pf_err: 0.05
@@ -30,14 +30,21 @@ amcl:
     save_pose_rate: 0.5
     sigma_hit: 0.2
     tf_broadcast: true
-    transform_tolerance: 2.0
+    transform_tolerance: 0.2
     update_min_a: 0.2
-    update_min_d: 0.25
+    update_min_d: 0.2
     z_hit: 0.5
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
     scan_topic: scan
+    set_initial_pose: true
+    initial_pose:
+      # TODO: make this configurable; these values (x=10, y=10) are for the maze world
+      x: 10.0
+      y: 10.0
+      z: 0.0
+      yaw: 0.0
 
 amcl_map_client:
   ros__parameters:
@@ -46,7 +53,6 @@ amcl_map_client:
 amcl_rclcpp_node:
   ros__parameters:
     use_sim_time: True
-
 
 bt_navigator:
   ros__parameters:

@@ -185,7 +185,7 @@ gui:=false
 ```
 
 
-Initialize the position with "2D Pose Estimate". You should see sensor inputs and costmap by now.
+If necessary, initialize the position with "2D Pose Estimate". You should see sensor inputs and costmap by now.
 Now, you can use the "2D Goal Pose" tool in RViz to set a navigation goal for move_base
 
 Gazebo demo (mapping)
