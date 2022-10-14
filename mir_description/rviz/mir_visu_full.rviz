@@ -58,7 +58,7 @@ Visualization Manager:
         Durability Policy: Transient Local
         Filter size: 10
         History Policy: Keep Last
-        Reliability Policy: Reliable
+        Reliability Policy: System Default
         Value: /map
       Update Topic:
         Depth: 5
@@ -312,7 +312,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
