@@ -2,7 +2,8 @@
 <!--
   Various useful properties such as constants and materials
  -->
-<robot name="xacro_properties" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="xacro_properties" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
   <!-- #################### RViz materials #################### -->
   <xacro:property name="material_white">
     <material name="white">

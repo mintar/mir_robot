@@ -26,7 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# Author: relffok
+# Author: relffok, oscar-lima
 
 import os
 
@@ -35,15 +35,62 @@ from launch import LaunchDescription
 from launch.conditions import IfCondition
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, SetLaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource, FrontendLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution, PythonExpression
 from launch_ros.actions import Node
 
+def _create_jsp_and_relay_nodes(context, *_):
+    ns = context.launch_configurations.get('namespace', '')
+    prefix = f'/{ns}' if ns else ''
+
+    source_list = [
+        f'{prefix}/mir_joint_states',
+    ]
+
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        namespace=ns,
+        output='screen',
+        parameters=[{
+            'use_sim_time': context.launch_configurations.get('use_sim_time', 'true') == 'true',
+            'source_list': source_list,
+            'rate': 60.0,
+        }]
+    )
+
+    relay_joint_states_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='joint_states_relay',      # no more “todo”
+        namespace=ns,
+        arguments=['joint_states', 'dynamic_joint_states'],
+        output='screen',
+    )
+
+    return [joint_state_publisher_node, relay_joint_states_node]
+
+def _create_rviz_node(context, *_):
+    ns = context.launch_configurations.get('namespace', '')
+    fixed_frame = f'{ns}/odom' if ns else 'odom'
+
+    rviz_cfg = context.launch_configurations.get('rviz_config_file')
+    use_sim  = context.launch_configurations.get('use_sim_time', 'true') == 'true'
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        namespace=ns,                     # RViz node itself can sit in the ns
+        output={'both': 'log'},
+        arguments=['-d', rviz_cfg, '-f', fixed_frame],
+        parameters=[{'use_sim_time': use_sim}],
+    )
+    return [rviz_node]
 
 def generate_launch_description():
 
     mir_description_dir = get_package_share_directory('mir_description')
     mir_gazebo_dir = get_package_share_directory('mir_gazebo')
-    gazebo_ros_dir = get_package_share_directory('gazebo_ros')
 
     rviz_config_file = LaunchConfiguration('rviz_config_file')
 
@@ -51,6 +98,10 @@ def generate_launch_description():
 
     declare_namespace_arg = DeclareLaunchArgument(
         'namespace', default_value='', description='Namespace to push all topics into.'
+    )
+
+    declare_mir_type_arg = DeclareLaunchArgument(
+        'mir_type', default_value='mir_100', description='Either mir_100 or mir_250 are supported.'
     )
 
     declare_robot_x_arg = DeclareLaunchArgument(
@@ -87,27 +138,34 @@ def generate_launch_description():
 
     declare_rviz_config_arg = DeclareLaunchArgument(
         'rviz_config_file',
-        default_value=os.path.join(mir_description_dir, 'rviz', 'mir_visu_full.rviz'),
+        default_value=os.path.join(mir_gazebo_dir, 'rviz', 'mir_visualization.rviz'),
         description='Define rviz config file to be used.',
     )
 
     declare_gui_arg = DeclareLaunchArgument('gui', default_value='true', description='Set to "false" to run headless.')
 
+    world_file = PathJoinSubstitution([
+        mir_gazebo_dir,
+        'worlds',
+        PythonExpression(['\'', LaunchConfiguration('world'), TextSubstitution(text='.world'), '\''])
+    ])
+
     launch_gazebo_world = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(gazebo_ros_dir, 'launch', 'gazebo.launch.py')),
-        launch_arguments={
-            'verbose': LaunchConfiguration('verbose'),
-            'gui': LaunchConfiguration('gui'),
-            'world': [mir_gazebo_dir, '/worlds/', LaunchConfiguration('world'), '.world'],
-        }.items(),
+        PythonLaunchDescriptionSource(
+            [os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]
+        ),
+        launch_arguments={'gz_args': ['-r -v4 ', world_file], 'on_exit_shutdown': 'true'}.items(),
     )
 
     launch_mir_description = IncludeLaunchDescription(
-        FrontendLaunchDescriptionSource(os.path.join(mir_description_dir, 'launch', 'robot_state_publisher.launch'))
+        FrontendLaunchDescriptionSource(os.path.join(mir_description_dir, 'launch', 'robot_state_publisher.launch')),
+        launch_arguments={'mir_type':LaunchConfiguration('mir_type'), 'tf_prefix':LaunchConfiguration('namespace')}.items(),
     )
 
-    launch_mir_gazebo_common = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(mir_gazebo_dir, 'launch', 'include', 'mir_gazebo_common.py'))
+    launch_mir_robot_scan_merger = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(mir_gazebo_dir, 'launch', 'includes', 'mir_robot_scan_merger_launch.py')),
+        launch_arguments={'namespace': LaunchConfiguration('namespace'),
+                          'use_sim_time': 'true'}.items(),
     )
 
     def process_namespace(context):
@@ -120,26 +178,35 @@ def generate_launch_description():
         return [SetLaunchConfiguration('robot_name', robot_name)]
 
     spawn_robot = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         arguments=[
-            '-entity',
-            LaunchConfiguration('robot_name'),
-            '-topic',
-            'robot_description',
-            '-b',
-        ],  # bond node to gazebo model,
+            '-name', LaunchConfiguration('robot_name'),
+            '-topic', 'robot_description',
+            '-x', '0.0', '-y', '0.0', '-z', '0.0',
+            '-R', '0.0', '-P', '0.0', '-Y', '0.0',
+        ],
         namespace=LaunchConfiguration('namespace'),
         output='screen',
     )
 
-    launch_rviz = Node(
+    gz_bridge_node = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='mir_gz_bridge',
+        namespace=LaunchConfiguration('namespace'),
+        output='screen',
+        parameters=[{
+            'config_file': PathJoinSubstitution([
+                mir_gazebo_dir, 'config', 'ros_gz_bridge_config.yaml'
+            ]),
+            'expand_gz_topic_names': True
+        }]
+    )
+
+    launch_rviz = OpaqueFunction(
+        function=_create_rviz_node,
         condition=IfCondition(LaunchConfiguration('rviz_enabled')),
-        package='rviz2',
-        executable='rviz2',
-        output={'both': 'log'},
-        arguments=['-d', rviz_config_file],
-        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
     )
 
     launch_teleop = Node(
@@ -153,6 +220,7 @@ def generate_launch_description():
 
     ld.add_action(OpaqueFunction(function=process_namespace))
     ld.add_action(declare_namespace_arg)
+    ld.add_action(declare_mir_type_arg)
     ld.add_action(declare_robot_x_arg)
     ld.add_action(declare_robot_y_arg)
     ld.add_action(declare_robot_yaw_arg)
@@ -166,8 +234,10 @@ def generate_launch_description():
 
     ld.add_action(launch_gazebo_world)
     ld.add_action(launch_mir_description)
-    ld.add_action(launch_mir_gazebo_common)
+    ld.add_action(OpaqueFunction(function=_create_jsp_and_relay_nodes))
+    ld.add_action(launch_mir_robot_scan_merger)
     ld.add_action(spawn_robot)
+    ld.add_action(gz_bridge_node)
     ld.add_action(launch_rviz)
     ld.add_action(launch_teleop)
 

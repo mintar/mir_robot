@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
+set(CMAKE_POLICY_DEFAULT_CMP0144 NEW) # to remove warning "Policy CMP0144 is not set"
 project(mir_gazebo)
 
 # Default to C99
@@ -18,13 +19,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(mir_description REQUIRED)
-find_package(gazebo REQUIRED)
-find_package(gazebo_ros REQUIRED)
-find_package(gazebo_ros_pkgs REQUIRED)
+find_package(ros_gz_sim REQUIRED)
 find_package(ira_laser_tools REQUIRED)
 
 install(DIRECTORY
-  launch worlds maps rviz
+  config launch worlds maps rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

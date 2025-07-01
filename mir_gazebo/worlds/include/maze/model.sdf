@@ -18,12 +18,10 @@
             <size>20 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>0.030536 9.925 0 0 -0 0</pose>
@@ -44,12 +42,10 @@
             <size>20 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>9.95554 0 0 0 0 -1.5708</pose>
@@ -70,12 +66,10 @@
             <size>20 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>0.030536 -9.925 0 0 -0 3.14159</pose>
@@ -96,12 +90,10 @@
             <size>1.5 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>5.35089 3.21906 0 0 -0 3.14159</pose>
@@ -122,12 +114,10 @@
             <size>5.25 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>4.67589 5.76906 0 0 -0 1.5708</pose>
@@ -148,12 +138,10 @@
             <size>5.5 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>7.10914 4.73454 0 0 0 -1.5708</pose>
@@ -174,12 +162,10 @@
             <size>3 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>8.53414 2.05954 0 0 -0 0</pose>
@@ -200,12 +186,10 @@
             <size>20 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>-9.89446 0 0 0 -0 1.5708</pose>
@@ -226,12 +210,10 @@
             <size>5.5 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>-4.35914 -2.82889 0 0 0 -1.5708</pose>
@@ -252,12 +234,10 @@
             <size>5.75 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>-7.15914 -5.50389 0 0 -0 3.14159</pose>
@@ -278,12 +258,10 @@
             <size>16 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>-1.89911 1.86906 0 0 -0 0</pose>
@@ -304,12 +282,10 @@
             <size>1.5 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>6.02589 2.54406 0 0 -0 1.5708</pose>
@@ -330,12 +306,10 @@
             <size>0.15 0.15 2.5</size>
           </box>
         </geometry>
-        <material>
-          <script>
-            <uri>file://media/materials/scripts/gazebo.material</uri>
-            <name>Gazebo/Grey</name>
-          </script>
+        <material> <!-- Gazebo/Grey -->
           <ambient>1 1 1 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
         </material>
       </visual>
       <pose frame=''>6.02589 3.21906 0 0 -0 0</pose>
