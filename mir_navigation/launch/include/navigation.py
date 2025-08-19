@@ -114,8 +114,8 @@ def generate_launch_description():
                 remappings=remappings,
             ),
             Node(
-                package='nav2_recoveries',
-                executable='recoveries_server',
+                package='nav2_behaviors',
+                executable='behavior_server',
                 name='recoveries_server',
                 output='screen',
                 parameters=[configured_params],
