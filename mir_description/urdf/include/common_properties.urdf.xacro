@@ -4,7 +4,7 @@
  -->
 <robot name="xacro_properties" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- #################### RViz materials #################### -->
+  <!-- #################### RViz and Gazebo materials #################### -->
   <xacro:property name="material_white">
     <material name="white">
       <color rgba="1 1 1 1"/>

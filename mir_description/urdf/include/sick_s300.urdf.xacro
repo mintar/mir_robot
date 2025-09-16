@@ -30,11 +30,6 @@
     </link>
 
     <gazebo reference="${prefix}${link}">
-      <material> <!-- Gazebo/FlatBlack -->
-        <ambient>0.1 0.1 0.1 1</ambient>
-        <diffuse>0.1 0.1 0.1 1</diffuse>
-        <specular>0.01 0.01 0.01 1</specular>
-      </material>
       <sensor name="${prefix}${link}" type="gpu_lidar">
         <pose relative_to="${prefix}${link}">0 0 0 0 0 0</pose>
         <topic>${prefix}${topic}</topic>

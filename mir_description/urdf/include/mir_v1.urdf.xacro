@@ -63,13 +63,6 @@
         </geometry>
       </collision>
     </link>
-    <gazebo reference="${prefix}${locationprefix}_wheel_link">
-      <material>  <!-- Gazebo/FlatBlack -->
-        <ambient>0.1 0.1 0.1 1</ambient>
-        <diffuse>0.1 0.1 0.1 1</diffuse>
-        <specular>0.01 0.01 0.01 1</specular>
-      </material>
-    </gazebo>
   </xacro:macro>
 
   <xacro:macro name="caster_wheel" params="prefix locationprefix locationright wheel_base_dx">
@@ -109,13 +102,6 @@
         </geometry>
       </collision>
     </link>
-    <gazebo reference="${prefix}${locationprefix}_caster_rotation_link">
-      <material> <!-- Gazebo/Grey-->
-        <ambient>0.3 0.3 0.3 1</ambient>
-        <diffuse>0.7 0.7 0.7 1</diffuse>
-        <specular>0.01 0.01 0.01 1</specular>
-      </material>
-    </gazebo>
 
     <!-- caster wheel -->
     <joint name="${prefix}${locationprefix}_caster_wheel_joint" type="continuous">
@@ -143,13 +129,6 @@
         </geometry>
       </collision>
     </link>
-    <gazebo reference="${prefix}${locationprefix}_caster_wheel_link">
-      <material> <!-- Gazebo/FlatBlack -->
-        <ambient>0.1 0.1 0.1 1</ambient>
-        <diffuse>0.1 0.1 0.1 1</diffuse>
-        <specular>0.01 0.01 0.01 1</specular>
-      </material>
-    </gazebo>
   </xacro:macro>
 
   <xacro:macro name="mir" params="prefix">
@@ -179,13 +158,6 @@
         </geometry>
       </collision>
     </link>
-    <gazebo reference="${prefix}base_link">
-      <material> <!-- Gazebo/White -->
-        <ambient>1 1 1 1</ambient>
-        <diffuse>1 1 1 1</diffuse>
-        <specular>0.1 0.1 0.1 1</specular>
-      </material>
-    </gazebo>
 
     <!-- IMU -->
     <joint name="${prefix}base_link_to_imu_joint" type="fixed">
