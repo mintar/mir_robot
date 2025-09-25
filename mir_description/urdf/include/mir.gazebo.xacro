@@ -1,42 +1,85 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <!-- See https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Diff-drive for ros2 information -->
-  <xacro:macro name="diff_controller_plugin_gazebo" params="prefix ns left_wheel_joint right_wheel_joint wheel_separation wheel_radius">
+  <xacro:macro name="sensors_system_plugin" params="">
     <gazebo>
-      <!-- Use gazebo_ros_joint_state_publisher instead of publishWheelJointState -->
-      <plugin name="joint_states" filename="libgazebo_ros_joint_state_publisher.so">
-        <ros>
-          <namespace>${ns}</namespace>
-        </ros>
-        <update_rate>1000.0</update_rate>
-        <joint_name>${right_wheel_joint}</joint_name>
-        <joint_name>${left_wheel_joint}</joint_name>
+      <!-- Required by lidar in simulation -->
+      <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"/>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- plugin to publish joint states, see code under
+         https://github.com/gazebosim/gz-sim/blob/gz-sim8/src/systems/joint_state_publisher/JointStatePublisher.hh -->
+  <xacro:macro name="joint_states_plugin_gazebo" params="prefix topic left_wheel_joint right_wheel_joint">
+    <gazebo>
+      <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+        <topic>${prefix}${topic}</topic>
+        <joint_name>${prefix}${left_wheel_joint}</joint_name>
+        <joint_name>${prefix}${right_wheel_joint}</joint_name>
+        <!-- publishing the caster wheels joints is possible in simulation uncommenting this sections of the code
+             but the real robot does not has enconders in the caster wheels.
+             Furthermore it helps to save bandwidth not to publish them.
+
+        <joint_name>${prefix}fl_caster_wheel_joint</joint_name>
+        <joint_name>${prefix}fr_caster_wheel_joint</joint_name>
+        <joint_name>${prefix}bl_caster_wheel_joint</joint_name>
+        <joint_name>${prefix}br_caster_wheel_joint</joint_name>
+        <joint_name>${prefix}fl_caster_rotation_joint</joint_name>
+        <joint_name>${prefix}fr_caster_rotation_joint</joint_name>
+        <joint_name>${prefix}bl_caster_rotation_joint</joint_name>
+        <joint_name>${prefix}br_caster_rotation_joint</joint_name> -->
       </plugin>
+    </gazebo>
+  </xacro:macro>
 
-      <plugin name="diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
-        <ros>
-          <remapping>cmd_vel:=${prefix}cmd_vel</remapping>
-          <remapping>odom:=${prefix}odom</remapping>
-        </ros>
+  <!-- diff drive plugin, see code under
+         https://github.com/gazebosim/gz-sim/blob/gz-sim8/src/systems/diff_drive/DiffDrive.hh -->
+  <xacro:macro name="diff_controller_plugin_gazebo" params="prefix left_wheel_joint right_wheel_joint wheel_separation wheel_radius">
+    <gazebo>
+      <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
 
-        <legacy_mode>false</legacy_mode>
-        <always_on>true</always_on>
-
-        <update_rate>1000.0</update_rate>
+        <!-- wheels -->
         <left_joint>${left_wheel_joint}</left_joint>
         <right_joint>${right_wheel_joint}</right_joint>
+
+        <!-- kinematics -->
         <wheel_separation>${wheel_separation}</wheel_separation>
-        <wheel_diameter>${2*wheel_radius}</wheel_diameter>
-        <odometry_frame>${prefix}odom</odometry_frame>
+        <wheel_radius>${wheel_radius}</wheel_radius>
 
-        <robot_base_frame>${prefix}base_footprint</robot_base_frame>
-        <publish_odom>true</publish_odom>
-        <publish_wheel_tf>false</publish_wheel_tf>
-        <publish_odom_tf>true</publish_odom_tf>
+        <!-- limits
 
-        <max_wheel_torque>10</max_wheel_torque>
-        <max_wheel_acceleration>2.8</max_wheel_acceleration>
+          The following params could be set if needed
+
+          min_velocity - Sets both the minimum linear and minimum angular velocity.
+          min_linear_velocity - Sets the minimum linear velocity. Overrides `<min_velocity>` if set.
+          min_angular_velocity - Sets the minimum angular velocity. Overrides `<min_velocity>` if set.
+
+          max_velocity - Sets both the maximum linear and maximum angular velocity.
+          max_linear_velocity - Sets the maximum linear velocity. Overrides `<max_velocity>` if set.
+          max_angular_velocity - Sets the maximum angular velocity. Overrides `<max_velocity>` if set.
+
+          min_acceleration - Sets both the minimum linear and minimum angular acceleration.
+          min_linear_acceleration - Sets the minimum linear acceleration. Overrides `<min_acceleration>` if set.
+          min_angular_acceleration - Sets the minimum angular acceleration. Overrides `<min_acceleration>` if set.
+
+          max_acceleration - Sets both the maximum linear and maximum angular acceleration.
+        -->
+        <max_linear_acceleration>2.8</max_linear_acceleration>
+        <!-- max_angular_acceleration (could be set if needed) - Sets the maximum angular acceleration.
+                                                                 Overrides `<max_acceleration>` if set. -->
+
+        <!-- DEPRECATED params from previous plugin implementation and therefore not set, could not find equivalent 
+
+          max_wheel_acceleration 2.8
+          same as with update_rate 1000.0
+        -->
+
+        <topic>${prefix}cmd_vel</topic>
+        <odom_topic>${prefix}odom</odom_topic>
+        <frame_id>${prefix}odom</frame_id>
+        <child_frame_id>${prefix}base_footprint</child_frame_id>
+        <odom_publish_frequency>100</odom_publish_frequency>
+        <tf_topic>/tf</tf_topic>
 
       </plugin>
     </gazebo>
@@ -61,7 +104,11 @@
     <xacro:set_wheel_friction link="${prefix}br_caster_wheel_link" friction="1"/>
   </xacro:macro>
 
- <!-- See https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-P3D for ros2 information -->
+  <!-- Not yet migrated to ROS 2, and not sure why is needed, probably as ground truth for fake localization?
+    If we want to migrate it in future, perhaps see
+    https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-P3D for ros2 information
+    although I think is not gazebo harmonic compatible, so we would need to adapt it
+
   <xacro:macro name="p3d_base_controller" params="prefix">
     <gazebo>
       <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
@@ -77,5 +124,83 @@
         <rpy_offset>0 0 0</rpy_offset>
       </plugin>
     </gazebo>
+  </xacro:macro> -->
+
+  <!-- imu plugin, see code under
+    https://github.com/gazebosim/gz-sim/blob/gz-sim8/src/systems/imu/Imu.hh
+    https://github.com/gazebosim/gz-sensors/blob/gz-sensors8/include/gz/sensors/ImuSensor.hh and documentation under
+    https://gazebosim.org/docs/harmonic/sensors/ -->
+  <xacro:macro name="imu_gazebo" params="prefix link stdev imu_topic update_rate">
+    <gazebo>
+      <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    </gazebo>
+
+    <gazebo reference="${prefix}${link}">
+      <sensor name="imu_sensor" type="imu">
+        <pose relative_to="${prefix}${link}">0 0 0 0 0 0</pose>
+        <gz_frame_id>${prefix}${link}</gz_frame_id>
+        <update_rate>${update_rate}</update_rate>
+        <topic>${prefix}${imu_topic}</topic>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+
+        <imu>
+          <angular_velocity>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.0000075</bias_mean>
+                <bias_stddev>0.0000008</bias_stddev>
+              </noise>
+            </z>
+          </angular_velocity>
+
+          <linear_acceleration>
+            <x>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </x>
+            <y>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </y>
+            <z>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>${stdev}</stddev>
+                <bias_mean>0.1</bias_mean>
+                <bias_stddev>0.001</bias_stddev>
+              </noise>
+            </z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </gazebo>
   </xacro:macro>
+
 </robot>

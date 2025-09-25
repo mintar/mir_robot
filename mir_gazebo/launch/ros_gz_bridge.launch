@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="ns"  default="" description="Robot namespace." />
+
+  <node pkg="ros_gz_bridge" exec="parameter_bridge" name="mir_gz_bridge" output="screen" namespace="$(var ns)">
+      <param name="config_file" value="$(find-pkg-share mir_gazebo)/config/ros_gz_bridge_config.yaml"/>
+      <param name="expand_gz_topic_names" value="true"/>
+  </node>
+
+</launch>

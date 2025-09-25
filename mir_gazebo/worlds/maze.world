@@ -1,15 +1,20 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
   <world name="maze_world">
+
+    <!-- A global light source -->
     <include>
-      <uri>model://sun</uri>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/sun</uri>
     </include>
     <!-- A ground plane -->
     <include>
-      <uri>model://ground_plane</uri>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Ground Plane</uri>
     </include>
+
     <include>
-    	<uri>model://maze</uri>
+      <uri>model://maze</uri>
+      <pose>0 0 0 0 0 0</pose>
     </include>
+
   </world>
 </sdf>
